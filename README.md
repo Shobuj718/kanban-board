@@ -1,20 +1,19 @@
-<div align="center">
   
 # Kanban Board
 
-- Technology Used : Laravel-8, Bootstrap-4, Vue.js 2
+- Technology Used : Laravel-8, Bootstrap-4, Vue.js 2.
 #
 
 ![Screenshot](intial-image-view.PNG)
 
-- Click Kanban board link
+- After run this project Click Kanban board link.
 
 ![Screenshot](1.PNG)
 
--- add new task 
+- add new task using add button.
 
 ![Screenshot](2.PNG)
-</div>
+
 
 ## Setup
 
