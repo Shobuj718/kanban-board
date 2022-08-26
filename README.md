@@ -1,7 +1,7 @@
   
 # Kanban Board
 
-- Technology Used : Laravel-8, Bootstrap-4, Vue.js 2.
+- Technology Used : Laravel-8, MySQL, Vue.js 2.
 #
 
 - Frontend design before create api, databaes or other functionalities
