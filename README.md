@@ -17,7 +17,7 @@
 
 ## Setup
 
-	- Clone site
+	- Clone site (api branch)
 	- composer install
 	- npm install
 	- npm run dev
