@@ -6,8 +6,15 @@
 #
 
 ![Screenshot](intial-image-view.PNG)
+
+- Click Kanban board link
+
 ![Screenshot](1.PNG)
+
+-- add new task 
+
 ![Screenshot](2.PNG)
+</div>
 
 ## Setup
 
@@ -20,5 +27,5 @@
 	- php artisan migrate:fresh --seed
 	- php artisan serve
 
-</div>
+
 
