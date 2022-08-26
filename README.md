@@ -1,8 +1,7 @@
-<div align="center">
   
-# Employees-Management Application
+# Kanban board
 
-- Technology Used : Laravel-8, Bootstrap-4, Vue.js, Moment.js, Vue Datepicker.
+- Technology Used : Laravel-8, Bootstrap-4, Vue.js 2.
 #
 
 ## Setup
@@ -14,7 +13,4 @@
 	- php artisan key:generate
 	- php artisan serve
 
-</div>
 
-## Features & Requirements :
- - Only employee management implement by vuejs
