@@ -1901,17 +1901,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: {
     statusId: Number
@@ -1919,56 +1908,89 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       tasks: [],
+      progress: [],
+      complete: [],
       statuses: [],
       newTask: {
         title: ""
       },
-      errorMessage: ""
+      errors: []
     };
   },
   mounted: function mounted() {
-    this.getTasks();
+    // this.getTasks();
     this.toDoTaskList();
+    this.progressTaskList();
+    this.completeTaskList();
   },
   methods: {
-    getTasks: function getTasks() {// axios.get('/tasks')
-      // 	.then((res) => {
-      // 		this.statuses = res.data.data;
-      // 		console.log('statuses data');
-      // 		console.log(res);
-      // 	})
-    },
-    toDoTaskList: function toDoTaskList() {// axios.get('/to-do-tasks')
-      // 	.then((res) => {
-      // 		this.tasks = res.data;
-      // 		console.log('to-do-tasks data');
-      // 		console.log(this.tasks);
-      // 	})
-    },
-    moveTasktoProgress: function moveTasktoProgress(id) {
+    getTasks: function getTasks() {
       var _this = this;
 
-      this.axios.post("/task-move/to/progress/".concat(id)).then(function (res) {
-        _this.tasks = res.data;
-        console.log('to-doddd-tasks data');
-        console.log(_this.tasks);
+      axios.get('/api/tasks').then(function (res) {
+        _this.statuses = res.data.data; // console.log(res);
+      });
+    },
+    toDoTaskList: function toDoTaskList() {
+      var _this2 = this;
+
+      axios.get('/api/to-do-tasks').then(function (res) {
+        _this2.tasks = res.data.data; // console.log(this.tasks);
+      });
+    },
+    progressTaskList: function progressTaskList() {
+      var _this3 = this;
+
+      axios.get('/api/in-progress-tasks').then(function (res) {
+        _this3.progress = res.data.data; // console.log(this.progress);
+      });
+    },
+    completeTaskList: function completeTaskList() {
+      var _this4 = this;
+
+      axios.get('/api/complete-tasks').then(function (res) {
+        _this4.complete = res.data.data; // console.log(this.complete);
+      });
+    },
+    moveTasktoProgress: function moveTasktoProgress(id) {
+      var _this5 = this;
+
+      axios.put("/api/task-move/to/progress/".concat(id)).then(function (res) {
+        // console.log(res.data);
+        _this5.toDoTaskList();
+
+        _this5.progressTaskList();
+      });
+    },
+    moveTasktoDone: function moveTasktoDone(id) {
+      var _this6 = this;
+
+      axios.put("/api/task-move/to/done/".concat(id)).then(function (res) {
+        // console.log(res.data);
+        _this6.progressTaskList();
+
+        _this6.completeTaskList();
+      });
+    },
+    deleteTask: function deleteTask(id) {
+      var _this7 = this;
+
+      axios["delete"]("/api/task-delete/".concat(id)).then(function (res) {
+        // console.log(res.data);
+        _this7.completeTaskList();
       });
     },
     addTask: function addTask() {
-      var _this2 = this;
+      var _this8 = this;
 
-      // Basic validation so we don't send an empty task to the server
-      if (!this.newTask.title) {
-        this.errorMessage = "The title field is required";
-        return;
-      }
+      axios.post("/api/tasks", this.newTask).then(function (res) {
+        // console.log(res);
+        _this8.newTask.title = '';
 
-      axios.post("/tasks", this.newTask).then(function (res) {
-        console.log(res);
-
-        _this2.toDoTaskList();
-      })["catch"](function (err) {
-        console.log(err);
+        _this8.toDoTaskList();
+      })["catch"](function (error) {
+        // console.log(error)
+        _this8.errors = error.response.data.errors;
       });
     }
   }
@@ -6529,7 +6551,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-0107bd02] {\n\t  background-color: black;\n}\n.container[data-v-0107bd02] {\n\t  width: 70%;\n\t  min-width: 50%;\n\t  margin: auto;\n\t  display: flex;\n\t  flex-direction: column;\n}\n.kanban-heading[data-v-0107bd02] {\n\t  display: flex;\n\t  flex-direction: row;\n\t  justify-content: center;\n\t  font-family: sans-serif;\n}\n.kanban-heading-text[data-v-0107bd02] {\n\t  font-size: 1.8rem;\n\t  background-color: tomato;\n\t  padding: 0.8rem 1.7rem;\n\t  border-radius: 0.5rem;\n\t  margin: 1rem;\n\t  color: white;\n}\n.kanban-board[data-v-0107bd02] {\n\t  display: flex;\n\t  flex-direction: row;\n\t  justify-content: space-between;\n\t  font-family: sans-serif;\n}\n.kanban-block[data-v-0107bd02] {\n\t  padding: 0.6rem;\n\t  width: 30.5%;\n\t  min-width: 14rem;\n\t  min-height: 4.5rem;\n\t  border-radius: 0.3rem;\n}\n#todo[data-v-0107bd02] {\n\t  background-color: ;\n}\n#inprogress[data-v-0107bd02] {\n\t  background-color: ;\n}\n#done[data-v-0107bd02] {\n\t  background-color: ;\n}\n.task[data-v-0107bd02] {\n  background-color: white;\n  margin: 0.2rem 0rem 0.3rem 0rem;\n  border: 0.1rem solid black;\n  border-radius: 0.2rem;\n  padding: 0.5rem 0.2rem 0.5rem 2rem;\n}\n#task-button[data-v-0107bd02] {\n  margin: 0.2rem 0rem 0.1rem 0rem;\n  background-color: white;\n  border-radius: 0.2rem;\n  width: 100%;\n  border: 0.25rem solid black;\n  padding: 0.5rem 2.7rem;\n  border-radius: 0.3rem;\n  font-size: 1rem;\n}\n\n\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nbody[data-v-0107bd02] {\n\t  background-color: black;\n}\n.container[data-v-0107bd02] {\n\t  width: 70%;\n\t  min-width: 50%;\n\t  margin: auto;\n\t  display: flex;\n\t  flex-direction: column;\n}\n.text-red[data-v-0107bd02]{\n\t\tcolor: red;\n}\n.kanban-heading[data-v-0107bd02] {\n\t  display: flex;\n\t  flex-direction: row;\n\t  justify-content: center;\n\t  font-family: sans-serif;\n}\n.kanban-heading-text[data-v-0107bd02] {\n\t  font-size: 1.8rem;\n\t  background-color: tomato;\n\t  padding: 0.8rem 1.7rem;\n\t  border-radius: 0.5rem;\n\t  margin: 1rem;\n\t  color: white;\n}\n.kanban-board[data-v-0107bd02] {\n\t  display: flex;\n\t  flex-direction: row;\n\t  justify-content: space-between;\n\t  font-family: sans-serif;\n}\n.kanban-block[data-v-0107bd02] {\n\t  padding: 0.6rem;\n\t  width: 30.5%;\n\t  min-width: 14rem;\n\t  min-height: 4.5rem;\n\t  border-radius: 0.3rem;\n}\n#todo[data-v-0107bd02] {\n\t  background-color: #fec6d1;\n}\n#inprogress[data-v-0107bd02] {\n\t  background-color: #fec6d1;\n}\n#done[data-v-0107bd02] {\n\t  background-color: #fec6d1;\n}\n.task[data-v-0107bd02] {\n  background-color: white;\n  margin: 0.2rem 0rem 0.3rem 0rem;\n  border: 0.1rem solid black;\n  border-radius: 0.2rem;\n  padding: 0.5rem 0.2rem 0.5rem 2rem;\n}\n#task-button[data-v-0107bd02] {\n  margin: 0.2rem 0rem 0.1rem 0rem;\n  background-color: white;\n  border-radius: 0.2rem;\n  width: 100%;\n  border: 0.25rem solid black;\n  padding: 0.5rem 2.7rem;\n  border-radius: 0.3rem;\n  font-size: 1rem;\n}\n\n\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -37993,7 +38015,7 @@ var render = function() {
                 }
               ],
               staticClass: "form-control",
-              attrs: { type: "text" },
+              attrs: { type: "text", placeholder: "Enter task title" },
               domProps: { value: _vm.newTask.title },
               on: {
                 input: function($event) {
@@ -38008,27 +38030,15 @@ var render = function() {
               }
             }),
             _vm._v(" "),
-            _c(
-              "span",
-              {
-                directives: [
-                  {
-                    name: "show",
-                    rawName: "v-show",
-                    value: _vm.errorMessage,
-                    expression: "errorMessage"
-                  }
-                ],
-                staticClass: "text-red"
-              },
-              [
-                _vm._v(
-                  "\n\t\t\t          " +
-                    _vm._s(_vm.errorMessage) +
-                    "\n\t\t\t        "
-                )
-              ]
-            ),
+            _vm.errors.title
+              ? _c("span", { staticStyle: { color: "red" } }, [
+                  _vm._v(
+                    "\n                        " +
+                      _vm._s(_vm.errors.title[0]) +
+                      "\n                    "
+                  )
+                ])
+              : _vm._e(),
             _vm._v(" "),
             _c("button", { attrs: { type: "submit" } }, [_vm._v("Add")])
           ])
@@ -38037,7 +38047,94 @@ var render = function() {
       _vm._v(" "),
       _c("br"),
       _vm._v(" "),
-      _vm._m(1)
+      _c("div", { staticClass: "kanban-board" }, [
+        _c(
+          "div",
+          { staticClass: "kanban-block", attrs: { id: "todo" } },
+          [
+            _c("strong", [_vm._v("To Do")]),
+            _vm._v(" "),
+            _vm._l(_vm.tasks, function(task, index) {
+              return _c(
+                "div",
+                { key: index.id, staticClass: "task", attrs: { id: "task1" } },
+                [
+                  _c("span", [_vm._v(_vm._s(task.title))]),
+                  _vm._v(" "),
+                  _c("i", {
+                    staticClass: "fas fa fa-arrow-right",
+                    staticStyle: { cursor: "pointer" },
+                    on: {
+                      click: function($event) {
+                        return _vm.moveTasktoProgress(task.id)
+                      }
+                    }
+                  })
+                ]
+              )
+            })
+          ],
+          2
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "kanban-block", attrs: { id: "inprogress" } },
+          [
+            _c("strong", [_vm._v("In Progress")]),
+            _vm._v(" "),
+            _vm._l(_vm.progress, function(task, index) {
+              return _c(
+                "div",
+                { key: index.id, staticClass: "task", attrs: { id: "task1" } },
+                [
+                  _c("span", [_vm._v(_vm._s(task.title))]),
+                  _vm._v(" "),
+                  _c("i", {
+                    staticClass: "fas fa fa-arrow-right",
+                    staticStyle: { cursor: "pointer" },
+                    on: {
+                      click: function($event) {
+                        return _vm.moveTasktoDone(task.id)
+                      }
+                    }
+                  })
+                ]
+              )
+            })
+          ],
+          2
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "kanban-block", attrs: { id: "done" } },
+          [
+            _c("strong", [_vm._v("Done")]),
+            _vm._v(" "),
+            _vm._l(_vm.complete, function(task, index) {
+              return _c(
+                "div",
+                { key: index.id, staticClass: "task", attrs: { id: "task1" } },
+                [
+                  _c("span", [_vm._v(_vm._s(task.title))]),
+                  _vm._v(" "),
+                  _c("i", {
+                    staticClass: "fas fa fa-trash",
+                    staticStyle: { cursor: "pointer" },
+                    on: {
+                      click: function($event) {
+                        return _vm.deleteTask(task.id)
+                      }
+                    }
+                  })
+                ]
+              )
+            })
+          ],
+          2
+        )
+      ])
     ])
   ])
 }
@@ -38049,64 +38146,6 @@ var staticRenderFns = [
     return _c("div", { staticClass: "kanban-heading" }, [
       _c("strong", { staticClass: "kanban-heading-text" }, [
         _vm._v("Kanban Board")
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "kanban-board" }, [
-      _c("div", { staticClass: "kanban-block", attrs: { id: "todo" } }, [
-        _c("strong", [_vm._v("To Do")]),
-        _vm._v(" "),
-        _c("div", { staticClass: "task", attrs: { id: "task1" } }, [
-          _c("span", [_vm._v("new task")])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "task", attrs: { id: "task1" } }, [
-          _c("span", [_vm._v("Another new task")])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "task", attrs: { id: "task1" } }, [
-          _c("span", [_vm._v("Another new task")])
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "kanban-block", attrs: { id: "inprogress" } }, [
-        _c("strong", [_vm._v("In Progress")]),
-        _vm._v(" "),
-        _c("div", { staticClass: "task", attrs: { id: "task2" } }, [
-          _c("span", [_vm._v("Task 3")])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "task", attrs: { id: "task2" } }, [
-          _c("span", [_vm._v("Task 4")])
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "kanban-block", attrs: { id: "done" } }, [
-        _c("strong", [_vm._v("Done")]),
-        _vm._v(" "),
-        _c("div", { staticClass: "task", attrs: { id: "task2" } }, [
-          _c("span", [_vm._v("Task 1")])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "task", attrs: { id: "task2" } }, [
-          _c("span", [_vm._v("Task 2")])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "task", attrs: { id: "task2" } }, [
-          _c("span", [_vm._v("Task 2")])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "task", attrs: { id: "task2" } }, [
-          _c("span", [_vm._v("Task 2")])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "task", attrs: { id: "task2" } }, [
-          _c("span", [_vm._v("Task 2")])
-        ])
       ])
     ])
   }

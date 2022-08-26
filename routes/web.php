@@ -23,3 +23,4 @@ Auth::routes();
 Route::get('{any}', function () {
   return view('kanban.index');
 })->where('any', '.*');
+

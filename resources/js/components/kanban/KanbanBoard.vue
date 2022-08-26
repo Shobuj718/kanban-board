@@ -8,10 +8,11 @@
         <form @submit.prevent="addTask">
 	        <div class="kanban-heading">
 	        	
-            	<input v-model.trim="newTask.title" type="text" class="form-control">
-	            <span v-show="errorMessage" class="text-red">
-			          {{ errorMessage }}
-			        </span>
+            	<input v-model.trim="newTask.title" type="text" placeholder="Enter task title" class="form-control">
+	            	
+			        <span v-if="errors.title" style="color: red" class="">
+                        {{ errors.title[0] }}
+                    </span>
 	            <button type="submit">Add</button>
         		
 	        </div>
@@ -22,43 +23,31 @@
             <div class="kanban-block" id="todo">
 			    <strong>To Do</strong>
 			    
-			    <div class="task" id="task1" >
-			        <span>new task</span>
+			    <div class="task" id="task1" v-for="(task, index) in tasks" :key="index.id">
+			        <span>{{ task.title }}</span>
+			        <i @click="moveTasktoProgress(task.id)" style="cursor: pointer;" class="fas fa fa-arrow-right"></i>
 			    </div>
-			    <div class="task" id="task1" >
-			        <span>Another new task</span>
-			    </div>
-			    <div class="task" id="task1" >
-			        <span>Another new task</span>
-			    </div>
+
 			</div>
 
             <div class="kanban-block" id="inprogress">
                 <strong>In Progress</strong>
-                <div class="task" id="task2">
-			        <span>Task 3</span>
+               
+                <div class="task" id="task1" v-for="(task, index) in progress" :key="index.id">
+			        <span>{{ task.title }}</span>
+			        <i @click="moveTasktoDone(task.id)" style="cursor: pointer;" class="fas fa fa-arrow-right"></i>
 			    </div>
-			    <div class="task" id="task2">
-			        <span>Task 4</span>
-			    </div>
+
             </div>
             <div class="kanban-block" id="done">
                 <strong>Done</strong>
-                <div class="task" id="task2">
-			        <span>Task 1</span>
+                
+                <div class="task" id="task1" v-for="(task, index) in complete" :key="index.id">
+			        <span>{{ task.title }}</span>
+			        <i @click="deleteTask(task.id)" style="cursor: pointer;" class="fas fa fa-trash"></i>
 			    </div>
-			    <div class="task" id="task2">
-			        <span>Task 2</span>
-			    </div>
-			    <div class="task" id="task2">
-			        <span>Task 2</span>
-			    </div>
-			    <div class="task" id="task2">
-			        <span>Task 2</span>
-			    </div>
-			    <div class="task" id="task2">
-			        <span>Task 2</span>
-			    </div>
+
+
             </div>
         </div>
     </div>
@@ -72,63 +61,93 @@ export default{
   },
 	data() {
 		return {
-			tasks: [],
+			 tasks: [],
+			 progress: [],
+			 complete: [],
 			 statuses: [],
 
 			 newTask: {
 		        title: "",
 		      },
-		      errorMessage: ""
+		      errors: []
 
 		}
 	},
 
 	mounted() {
-		this.getTasks();
+		// this.getTasks();
 		this.toDoTaskList();
+		this.progressTaskList();
+		this.completeTaskList();
 	  },
 
 	methods: {
 		getTasks(){
-			// axios.get('/tasks')
-			// 	.then((res) => {
-			// 		this.statuses = res.data.data;
-			// 		console.log('statuses data');
-			// 		console.log(res);
-			// 	})
+			axios.get('/api/tasks')
+				.then((res) => {
+					this.statuses = res.data.data;
+					// console.log(res);
+				})
 		},
 		toDoTaskList(){
-			// axios.get('/to-do-tasks')
-			// 	.then((res) => {
-			// 		this.tasks = res.data;
-			// 		console.log('to-do-tasks data');
-			// 		console.log(this.tasks);
-			// 	})
-		},
-		moveTasktoProgress(id){
-			this.axios.post(`/task-move/to/progress/${id}`)
+			axios.get('/api/to-do-tasks')
 				.then((res) => {
-					this.tasks = res.data;
-					console.log('to-doddd-tasks data');
-					console.log(this.tasks);
+					this.tasks = res.data.data;
+					// console.log(this.tasks);
+				})
+		},
+		progressTaskList(){
+			axios.get('/api/in-progress-tasks')
+				.then((res) => {
+					this.progress = res.data.data;
+					// console.log(this.progress);
+				})
+		},
+		completeTaskList(){
+			axios.get('/api/complete-tasks')
+				.then((res) => {
+					this.complete = res.data.data;
+					// console.log(this.complete);
+				})
+		},
+
+		moveTasktoProgress(id){
+			axios.put(`/api/task-move/to/progress/${id}`)
+				.then((res) => {
+					// console.log(res.data);
+					this.toDoTaskList();
+					this.progressTaskList();
+				})
+		},
+		moveTasktoDone(id){
+			axios.put(`/api/task-move/to/done/${id}`)
+				.then((res) => {
+					// console.log(res.data);
+					this.progressTaskList();
+					this.completeTaskList();
+					
+				})
+		},
+		deleteTask(id){
+			axios.delete(`/api/task-delete/${id}`)
+				.then((res) => {
+					// console.log(res.data);
+					this.completeTaskList();
+					
 				})
 		},
 
 		addTask() {
-	      // Basic validation so we don't send an empty task to the server
-	      if (!this.newTask.title) {
-	        this.errorMessage = "The title field is required";
-	        return;
-	      }
-
 	      axios
-	        .post("/tasks", this.newTask)
+	        .post("/api/tasks", this.newTask)
 	        .then((res) => {
-	          console.log(res);
+	          // console.log(res);
+	          this.newTask.title = '';
 	          this.toDoTaskList();
 	        })
-	        .catch((err) => {
-	          console.log(err)
+	        .catch((error) => {
+	          // console.log(error)
+	          this.errors = error.response.data.errors;
 	        });
 	    },
 
@@ -148,6 +167,10 @@ export default{
 	  margin: auto;
 	  display: flex;
 	  flex-direction: column;
+	}
+
+	.text-red{
+		color: red;
 	}
 
 	.kanban-heading {
@@ -182,15 +205,15 @@ export default{
 	}
 
 	#todo {
-	  background-color: ;
+	  background-color: #fec6d1;
 	}
 
 	#inprogress {
-	  background-color: ;
+	  background-color: #fec6d1;
 	}
 
 	#done {
-	  background-color: ;
+	  background-color: #fec6d1;
 	}
 
 	.task {
