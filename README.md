@@ -4,6 +4,8 @@
 - Technology Used : Laravel-8, Bootstrap-4, Vue.js 2.
 #
 
+- Frontend design before create api, databaes or other functionalities
+
 ![Screenshot](intial-image-view.PNG)
 
 - After run this project Click Kanban board link.
